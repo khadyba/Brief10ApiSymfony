@@ -43,13 +43,18 @@ candidature_accepter:
     path: api/accepter/{id}
     controller: 'App\Controller\CandidaterController::accepterCandidature'
     methods: ['PUT']
-
+# Pour lister tout les candidatue
 candidature_lister:
     path: api/lister
     controller: 'App\Controller\CandidaterController::listerCandidatures'
     methods: ['GET']
-
+# Pour lister les candidature accepter
 candidature_lister_acceptees:
     path: api/lister_acceptees
     controller: 'App\Controller\CandidaterController::listerCandidaturesAcceptees'
+    methods: ['GET']
+# Pour lister les candidature refuser
+candidature_lister_refusees:
+    path: api/lister_refusees
+    controller: 'App\Controller\CandidaterController::listerCandidaturesRefusees'
     methods: ['GET']

@@ -134,10 +134,36 @@ class CandidaterController extends AbstractController
         return $this->json($candidaturesDetails);
     }
 
-    // #[Route('api/lister_refusees', name: 'candidature_lister_refusees', methods: ['GET'])]
-    // #[IsGranted("ROLE_ADMIN", message: 'Vous n\'avez pas les droits suffisants effectuer cette opération')]
-    // public function listerCandidaturesRefusees(): Response
-    // {
-    //     // Logique pour lister les candidatures refusées
-    // }
+    #[Route('api/lister_refusees', name: 'candidature_lister_refusees', methods: ['GET'])]
+    #[IsGranted("ROLE_ADMIN", message: 'Vous n\'avez pas les droits suffisants effectuer cette opération')]
+    public function listerCandidaturesRefusees(): Response
+    {
+        $entityManager = $this->entityManager;
+    
+        // Récupérer toutes les candidatures ayant le statut "accepté"
+        $candidaturesAcceptees = $entityManager->getRepository(Candidater::class)->findBy(['status' => 'refusé']);
+    
+        $candidaturesDetails = [];
+        foreach ($candidaturesAcceptees as $candidature) {
+            $candidatureDetails = [
+                'id' => $candidature->getId(),
+                'status' => $candidature->getStatus(),
+                'user_details' => [
+                    'id' => $candidature->getRelatedEntity()->getId(),
+                    'email'=>$candidature->getRelatedEntity()->getEmail()
+                    
+                ],
+                'formation_details' => [
+                    'id' => $candidature->getRelatedFormation()->getId(),
+                    'libeller'=>$candidature->getRelatedFormation()->getLibeller()
+
+                ]
+            ];
+    
+            $candidaturesDetails[] = $candidatureDetails;
+        }
+    
+        return $this->json($candidaturesDetails);
+        
+    }
 }
