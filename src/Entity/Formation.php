@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Entity;
-
+use Symfony\Component\Validator\Constraints as Assert;
 use App\Repository\FormationRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
@@ -15,16 +15,28 @@ class Formation
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
+  /**
+     * @ORM\Column(type="string", length=255)
+     * @Assert\NotBlank(message="Le libellé est requis")
+     */
     private ?string $libeller = null;
 
     #[ORM\Column(type: Types::TEXT)]
+     /**
+     * @ORM\Column(type="text")
+     * @Assert\NotBlank(message="La description est requise")
+     */
     private ?string $description = null;
 
     #[ORM\Column(length: 255)]
+     /**
+     * @ORM\Column(type="integer")
+     * @Assert\GreaterThan(value=0, message="La durée doit être supérieure à zéro")
+     */
     private ?string $durer_formations = null;
 
-    #[ORM\Column]
-    private ?bool $is_delete = null;
+    #[ORM\Column(type: 'boolean', options: ['default' => false])]
+    private ?bool $is_delete = false;
 
     public function getId(): ?int
     {
@@ -69,7 +81,10 @@ class Formation
 
     public function isIsDelete(): ?bool
     {
+        
         return $this->is_delete;
+        
+
     }
 
     public function setIsDelete(bool $is_delete): static

@@ -11,8 +11,8 @@ security:
                 property: email
     firewalls:
         dev:
-            pattern: ^/(_(profiler|wdt)|css|images|js)/
-            security: false
+                pattern: ^/(_(profiler|wdt)|css|images|js)/
+                security: true
         # main:
         #     lazy: true
         #     provider: app_user_provider
@@ -22,6 +22,8 @@ security:
             stateless: true
             json_login:
                 check_path: /api/login_check
+                username_path: email
+                password_path: password
                 success_handler: lexik_jwt_authentication.handler.authentication_success
                 failure_handler: lexik_jwt_authentication.handler.authentication_failure
         api:
@@ -38,8 +40,10 @@ security:
     # Easy way to control access for large sections of your site
     # Note: Only the *first* access control that matches will be used
     access_control:
-        - { path: ^/api/login_check, roles: PUBLIC_ACCESS }
-        - { path: ^/profile, roles: ROLE_ADMIN }
+    - { path: ^/api/login, role: PUBLIC_ACCESS}
+    - { path: ^/api/formation_create, role: 'ROLE_ADMIN'}
+    - { path: ^/api/formation_liste, role: 'ROLE_ADMIN'}
+  
 
 when@test:
     security:

@@ -26,18 +26,23 @@ class RegistController extends AbstractController
         $requestData = json_decode($request->getContent(), true);
 
         $user = new User();
-        $user->setEmail($requestData['username']);
+        $user->setEmail($requestData['email']);
         $user->setPassword($requestData['password']); 
-        
-       
+
+        // // Assignation du rôle administrateur
+        // $user->setRoles(['ROLE_ADMIN']);
+
         $hashedPassword = $userPasswordHasher->hashPassword($user, "password");
         $user->setPassword($hashedPassword);
-       
-        // Enregistrez l'utilisateur dans la base de données
-        $this->entityManager->persist($user);
-        $this->entityManager->flush();
+       // Enregistrement de l'utilisateur en base de données
+            $this->entityManager->persist($user);
+            $this->entityManager->flush();
 
-        return $this->json(['message' => 'Utilisateur Enregister!']);
+        // // Enregistrez l'utilisateur dans la base de données
+        // $this->entityManager->persist($user);
+        // $this->entityManager->flush();
+
+        return $this->json(['message' => 'Félicitations vous etes maintenant Inscris !']);
     }
 
    

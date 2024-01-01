@@ -2,10 +2,11 @@
 
 namespace App\Entity;
 
-use App\Repository\UserRepository;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
+use App\Repository\UserRepository;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
@@ -18,10 +19,10 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?int $id = null;
 
     #[ORM\Column(length: 180, unique: true)]
-    private ?string $username = null;
+    private ?string $email = null;
 
-    #[ORM\Column]
-    private array $roles = [];
+    #[ORM\Column(type: Types::SIMPLE_ARRAY, options: ['default' => '["ROLE_USER"]'])]
+    private array $role = ["ROLE_USER"];    
 
     /**
      * @var string The hashed password
@@ -36,12 +37,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     public function getEmail(): ?string
     {
-        return $this->username;
+        return $this->email;
     }
 
-    public function setEmail(string $username): static
+    public function setEmail(string $email): static
     {
-        $this->username = $username;
+        $this->email = $email;
 
         return $this;
     }
@@ -53,7 +54,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      */
     public function getUserIdentifier(): string 
     {
-        return (string) $this->username;
+        return (string) $this->email;
     }
 
     /**
@@ -61,16 +62,16 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      */
     public function getRoles(): array
     {
-        $roles = $this->roles;
-        // guarantee every user at least has ROLE_USER
-        $roles[] = 'ROLE_USER';
+        $role = $this->role;
+        // guarantee every user at least has role_USER
+        $role[] = "ROLE_USER";
 
-        return array_unique($roles);
+        return array_unique($role);
     }
 
-    public function setRoles(array $roles): static
+    public function setRoles(array $role): static
     {
-        $this->roles = $roles;
+        $this->role = $role;
 
         return $this;
     }
