@@ -52,7 +52,7 @@ class Candidater
         return $this;
     }
 
-    public function getRelatedUser(): ?User
+    public function getRelatedEntity(): ?User
     {
         return $this->relatedEntity;
     }

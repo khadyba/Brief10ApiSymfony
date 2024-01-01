@@ -38,10 +38,18 @@ candidature_enregistrer:
     controller: 'App\Controller\CandidaterController::enregistrerCandidature'
     methods: ['POST']
 
-
+# Pour Accepter une candidature 
 candidature_accepter:
     path: api/accepter/{id}
     controller: 'App\Controller\CandidaterController::accepterCandidature'
     methods: ['PUT']
 
+candidature_lister:
+    path: api/lister
+    controller: 'App\Controller\CandidaterController::listerCandidatures'
+    methods: ['GET']
 
+candidature_lister_acceptees:
+    path: api/lister_acceptees
+    controller: 'App\Controller\CandidaterController::listerCandidaturesAcceptees'
+    methods: ['GET']
