@@ -1,3 +1,68 @@
 controllers:
     resource: ../src/Controller/
     type: attribute
+kernel:
+  resource: ../src/Kernel.php
+  type: annotation
+# api_platform:
+#     path: /api
+api_login_check:
+    path: /api/login
+    # Pour afficher toutes les formations
+formation_list:
+    path: 'api/formations_liste'
+    controller: 'App\Controller\FormationController::index'
+    methods: ['GET']
+
+# Pour afficher une formation spécifique
+formation_show:
+    path: '/formations/{id}'
+    controller: 'App\Controller\FormationController::show'
+    methods: ['GET']
+
+# Pour ajouter une nouvelle formation
+formation_create:
+    path: 'api/formation_create'
+    controller: 'App\Controller\FormationController::create'
+    methods: ['POST']
+
+# Pour modifier une formation existante
+formation_update:
+    path: 'api/formations_modif/{id}'
+    controller: 'App\Controller\FormationController::update'
+    methods: ['PUT', 'PATCH']
+
+# Pour supprimer une formation
+formation_delete:
+    path: 'api/formations_delete/{id}'
+    controller: 'App\Controller\FormationController::delete'
+    methods: ['DELETE']
+    # Pour enregistrer une candidature
+candidature_enregistrer:
+    path: api/enregistrer/{id}
+    # requirements: ['idFormation' => '\d+']
+    controller: 'App\Controller\CandidaterController::enregistrerCandidature'
+    methods: ['POST']
+    requirements:
+        idFormation: '\d+' 
+
+# Pour Accepter une candidature 
+candidature_accepter:
+    path: api/accepter/{id}
+    controller: 'App\Controller\CandidaterController::accepterCandidature'
+    methods: ['PUT']
+# Pour lister tout les candidatue
+candidature_lister:
+    path: api/lister
+    controller: 'App\Controller\CandidaterController::listerCandidatures'
+    methods: ['GET']
+# Pour lister les candidature accepter
+candidature_lister_acceptees:
+    path: api/lister_acceptees
+    controller: 'App\Controller\CandidaterController::listerCandidaturesAcceptees'
+    methods: ['GET']
+# Pour lister les candidature refuser
+candidature_lister_refusees:
+    path: api/lister_refusees
+    controller: 'App\Controller\CandidaterController::listerCandidaturesRefusees'
+    methods: ['GET']
