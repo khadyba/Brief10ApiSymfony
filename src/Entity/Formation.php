@@ -1,12 +1,41 @@
 <?php
 
 namespace App\Entity;
-use Symfony\Component\Validator\Constraints as Assert;
-use App\Repository\FormationRepository;
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\Put;
+use ApiPlatform\Metadata\Post;
 use Doctrine\DBAL\Types\Types;
+use ApiPlatform\Metadata\Delete;
 use Doctrine\ORM\Mapping as ORM;
+use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\GetCollection;
+use App\Controller\FormationController;
+use App\Repository\FormationRepository;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: FormationRepository::class)]
+#[ApiResource(operations: [
+    new GetCollection(
+        // name: 'app_formations', 
+        // uriTemplate: '/api/formations_liste', 
+        // controller: FormationController::class.'::index'
+    ),
+    new Post(
+        name: 'app_formation', 
+        uriTemplate: 'api/formation_create', 
+        controller: FormationController::class.'::create'
+    ),
+    new Put(
+        // name: 'app_formations', 
+        // uriTemplate: '/api/formations_modif/{id}', 
+        // controller: FormationController::class.'::update'
+    ),
+    new Delete(
+        name: 'app_formations', 
+        uriTemplate: '/api/formations_delete/{id}', 
+        controller: FormationController::class.'::delete'
+    )
+])]
 class Formation
 {
     #[ORM\Id]

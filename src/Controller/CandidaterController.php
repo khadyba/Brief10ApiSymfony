@@ -11,31 +11,33 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-
+use Symfony\Component\DependencyInjection\ContainerInterface as DependencyInjectionContainerInterface;
 
 class CandidaterController extends AbstractController
 {
     private $entityManager;
+    protected $container;
 
-        public function __construct(EntityManagerInterface $entityManager)
+        public function __construct(EntityManagerInterface $entityManager, DependencyInjectionContainerInterface  $container)
         {
             $this->entityManager = $entityManager;
+            $this->container = $container;
         }
     #[Route('api/enregistrer/{idFormation}', name: 'candidature_enregistrer', methods: ['POST'])]
     #[IsGranted("ROLE_USER")]
-    public function enregistrerCandidature(Request $request, int $idFormation): Response
+    public function enregistrerCandidature( Formation $id): Response
     {
         $user = $this->getUser(); // Récupérer l'utilisateur connecté
 
         if ($user) {
             $entityManager = $this->entityManager;
 
-            // Trouver la formation correspondant à l'ID donné
-            $formation = $entityManager->getRepository(Formation::class)->find($idFormation);
+            // // Trouver la formation correspondant à l'ID donné
+            // $formation = $entityManager->getRepository(Formation::class)->find($idFormation);
 
-            if ($formation) {
+            if ($id) {
                 $newCandidature = new Candidater();
-                $newCandidature->setRelatedFormation($formation);
+                $newCandidature->setRelatedFormation($id);
                 $newCandidature->setRelatedEntity($user); // Assumer que vous avez une méthode setRelatedEntity
 
                 // Enregistrement dans la base de données
@@ -82,19 +84,19 @@ class CandidaterController extends AbstractController
 
     #[Route('api/accepter/{id}', name: 'candidature_accepter', methods: ['PUT'])]
     #[IsGranted("ROLE_ADMIN", message: 'Vous n\'avez pas les droits suffisants pour effectuer cette opération')]
-    public function accepterCandidature(int $id): Response
+    public function accepterCandidature(Candidater $id): Response
     {
         $entityManager =  $this->entityManager;
     
         // Récupérer la candidature par son ID
-        $candidature = $entityManager->getRepository(Candidater::class)->find($id);
+        // $candidature = $entityManager->getRepository(Candidater::class)->find($id);
     
-        if (!$candidature) {
+        if (!$id) {
             return $this->json(['message' => 'Candidature non trouvée'], Response::HTTP_NOT_FOUND);
         }
     
         // Modifier le statut de la candidature
-        $candidature->setStatus('accepté');
+        $id->setStatus('accepté');
     
         // Sauvegarder les modifications
         $entityManager->flush();

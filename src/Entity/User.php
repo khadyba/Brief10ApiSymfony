@@ -2,15 +2,34 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\Post;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use App\Repository\UserRepository;
+use App\Controller\RegistController;
+use ApiPlatform\Metadata\ApiResource;
+use App\Controller\ApiLoginController;
+use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Action\PlaceholderAction;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 
-
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ORM\Table(name: '`user`')]
+#[ApiResource(operations: [
+    new GetCollection(),
+    new Post(
+        name: 'app_regist', 
+        uriTemplate: 'api/regist', 
+        controller: RegistController::class.'::register'
+    ),
+    new Post(
+        name: 'api_login', 
+        uriTemplate: '/api/login', 
+        controller:ApiLoginController::class.'::login'
+    )
+])]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
     #[ORM\Id]

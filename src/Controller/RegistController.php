@@ -7,17 +7,22 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\HttpKernel\Attribute\AsController;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
-use Symfony\Component\HttpKernel\Attribute\AsController;
+
+#[AsController]
 class RegistController extends AbstractController
+
 {
- 
-        public function __construct(EntityManagerInterface $entityManager)
-        {
-            $this->entityManager = $entityManager;
-        }
+      protected $container;
+    public function __construct(EntityManagerInterface $entityManager, ContainerInterface  $container)
+    {
+        $this->entityManager = $entityManager;
+        $this->container = $container;
+    }
     private EntityManagerInterface $entityManager;
     #[Route('api/regist', name: 'app_regist',methods:['POST'])]
     public function register(Request $request, UserPasswordHasherInterface $userPasswordHasher): Response

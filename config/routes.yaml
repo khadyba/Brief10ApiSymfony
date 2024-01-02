@@ -1,6 +1,11 @@
 controllers:
     resource: ../src/Controller/
     type: attribute
+kernel:
+  resource: ../src/Kernel.php
+  type: annotation
+# api_platform:
+#     path: /api
 api_login_check:
     path: /api/login
     # Pour afficher toutes les formations
@@ -34,9 +39,12 @@ formation_delete:
     methods: ['DELETE']
     # Pour enregistrer une candidature
 candidature_enregistrer:
-    path: api/enregistrer/{idFormation}
+    path: api/enregistrer/{id}
+    # requirements: ['idFormation' => '\d+']
     controller: 'App\Controller\CandidaterController::enregistrerCandidature'
     methods: ['POST']
+    requirements:
+        idFormation: '\d+' 
 
 # Pour Accepter une candidature 
 candidature_accepter:

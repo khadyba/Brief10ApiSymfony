@@ -2,28 +2,31 @@
 
 namespace App\Controller;
 
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use App\Entity\Formation;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Security\Core\Security;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 
 class FormationController extends AbstractController
-
 {
         private $entityManager;
 
-        public function __construct(EntityManagerInterface $entityManager)
+        protected $container;
+
+        public function __construct(EntityManagerInterface $entityManager, ContainerInterface  $container)
         {
             $this->entityManager = $entityManager;
+            $this->container = $container;
         }
 
-        #[Route('/api/formations_liste', name: 'app_formation')]
+        #[Route('/api/formations_liste', name: 'app_formations')]
         public function index(): Response
         {
             $formationRepository = $this->entityManager->getRepository(Formation::class);
@@ -40,7 +43,7 @@ class FormationController extends AbstractController
             return $this->json($formattedFormations);
         }
 
-        #[Route('api/formation_create',name:'app_formations')]  
+        // #[Route('api/formation_create', name:'app_formation')]  
         #[IsGranted("ROLE_ADMIN", message: 'Vous n\'avez pas les droits suffisants pour publier une formation')]
         public function create(Request $request, EntityManagerInterface $entityManager, Security $authChecker,ValidatorInterface $validator,): Response
         {
@@ -64,11 +67,11 @@ class FormationController extends AbstractController
       }
       #[Route('/api/formations_modif/{id}', name: 'app_formations')]
       #[IsGranted("ROLE_ADMIN", message: 'Vous n\'avez pas les droits suffisants pour modifier une formation')]
-      public function update(int $id, Request $request): Response
+      public function update(Formation $id, Request $request): Response
       {
-          $formation = $this->entityManager->getRepository(Formation::class)->find($id);
+        //   $formation = $this->entityManager->getRepository(Formation::class)->find($id);
   
-          if (!$formation) {
+          if (!$id) {
               throw $this->createNotFoundException('Formation non trouvée pour cet ID');
           }
   
@@ -76,13 +79,13 @@ class FormationController extends AbstractController
   
           
           if (isset($requestData['libeller'])) {
-              $formation->setLibeller($requestData['libeller']);
+              $id->setLibeller($requestData['libeller']);
           }
           if (isset($requestData['description'])) {
-              $formation->setDescription($requestData['description']);
+             $id->setDescription($requestData['description']);
           }
           if (isset($requestData['durer_formations'])) {
-            $formation->setDurerFormations($requestData['durer_formations']);
+           $id->setDurerFormations($requestData['durer_formations']);
         }
           $this->entityManager->flush();
           return new Response('Formation mise à jour avec succès');
@@ -90,18 +93,18 @@ class FormationController extends AbstractController
       }
       #[Route('/api/formations_delete/{id}', name: 'app_formations')]
       #[IsGranted("ROLE_ADMIN", message: 'Vous n\'avez pas les droits suffisants pour publier une formation')]
-      public function delete(int $id): Response
+      public function delete(Formation $id): Response
       {
           // Récupérer la formation par son ID
-          $formation = $this->entityManager->getRepository(Formation::class)->find($id);
+        //   $formation = $this->entityManager->getRepository(Formation::class)->find($id);
   
           // Vérifier si la formation existe
-          if (!$formation) {
+          if (!$id) {
               throw $this->createNotFoundException('Formation non trouvée ');
           }
   
           // Marquer la formation comme supprimée
-          $formation->setIsDelete(true);
+          $id->setIsDelete(true);
   
           // Enregistrer les modifications dans la base de données
           $this->entityManager->flush();
